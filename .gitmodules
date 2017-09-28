@@ -1,0 +1,6 @@
+[submodule "PlotCritic"]
+	path = PlotCritic
+	url = https://github.com/jbelyeu/PlotCritic.git
+[submodule "Samplot"]
+	path = Samplot
+	url = https://github.com/ryanlayer/samplot.git
