@@ -41,7 +41,7 @@ Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,Samplot/tes
 -o img/hi_2_89161083_89185670.png -n NA12878,NA12889,NA12890 -t INV
 ```
 
-<img src="Samplot/doc/imgs/hi_2_89161083_89185670.png">
+<img src="doc/imgs/hi_2_89161083_89185670.png">
 
 ### Basic use case with sampling
 That took 1m23.766s to generate. To speed things up, we'll use the -d flag to set the sampling depth at 200 reads from the region we're interested in.
