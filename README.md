@@ -37,17 +37,17 @@ Let's say we have BAM files and want to see what the inversion in NA12878 at 2:8
 The following command will create an image of that region:
 ```
 python src/samplot.py -c chr2 -s 89161083 -e 89185670 -b \
-Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
+Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
 -o img/hi_2_89161083_89185670.png -n NA12878,NA12889,NA12890 -t INV
 ```
 
-<img src="doc/imgs/hi_2_89161083_89185670.png">
+<img src="Samplot/doc/imgs/hi_2_89161083_89185670.png">
 
 ### Basic use case with sampling
 That took 1m23.766s to generate. To speed things up, we'll use the -d flag to set the sampling depth at 200 reads from the region we're interested in.
 ```
 python src/samplot.py -c chr2 -s 89161083 -e 89185670 -b \
-test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
+Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
 -o img/hi_2_89161083_89185670_200reads.png -n NA12878,NA12889,NA12890 -t INV -d 200
 ```
 <img src="doc/imgs/hi_2_89161083_89185670_200reads.png">
@@ -60,7 +60,7 @@ Samplot also support CRAM input, which requires a reference fasta file for readi
 
 ```
 python src/samplot.py -c 2 -s 89161083 -e 89185670 -b \
-test/data/low_coverage/NA12878.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20121211.cram,test/data/low_coverage/NA12889.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20130415.cram,test/data/low_coverage/NA12890.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20130415.cram \
+Samplot/test/data/low_coverage/NA12878.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20121211.cram,Samplot/test/data/low_coverage/NA12889.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20130415.cram,Samplot/test/data/low_coverage/NA12890.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20130415.cram \
 -o img/low_2_89161083_89185670_200reads_cram.png -n NA12878,NA12889,NA12890 -t INV -d 200 -r ~/Research/data/reference/hg19/hg19.fa
 ```
 <img src="doc/imgs/low_2_89161083_89185670_200reads_cram.png">
