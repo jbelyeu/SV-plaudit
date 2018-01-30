@@ -37,7 +37,7 @@ Let's say we have BAM files and want to see what the inversion in NA12878 at 2:8
 The following command will create an image of that region:
 ```
 python src/samplot.py -c chr2 -s 89161083 -e 89185670 -b \
-test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
+Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
 -o img/hi_2_89161083_89185670.png -n NA12878,NA12889,NA12890 -t INV
 ```
 
