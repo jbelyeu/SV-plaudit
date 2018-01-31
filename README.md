@@ -7,11 +7,9 @@ The PlotCritic and Samplot submodules each contain instructions for use. `upload
 **General Steps:**
 1. Generate a set of images with Samplot.
 2. Follow PlotCritic setup instructions to create the cloud environment.
-3. Use `upload.py` with the directory that holds the Samplot images to upload them.
-    ```
-    python upload.py -d your_directory
-    ```
-4. Follow PlotCritic instructions to score images and retrieve scores.
+3. Upload the images to PlotCritic website.
+4. Score images.
+5. Retrieve scores and analyze results.
 
 **Python dependencies:**
 * numpy
@@ -39,7 +37,7 @@ The following command will create an image of that region:
 python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/alignments/NA12878_restricted.bam,Samplot/test/data/alignments/NA12889_restricted.bam,Samplot/test/data/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL > 4_115928726_115931880.args
 ```
 
-<img src="/doc/imgs/X_101055330_101067156.png">
+<img src="/doc/imgs/4_115928726_115931880.png">
 
 ### CRAM inputs
 Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size.
@@ -59,23 +57,23 @@ Prep:
    * AmazonCognitoPowerUser
 Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
-2. Clone PlotCritic repo, cd into it, and run the following command (substituting your own fields):
+2. Run the following command (substituting your own fields):
 ```
-python plotcritic_setup.py \
+python PlotCritic/plotcritic_setup.py \
 	-p "PROJECT_NAME" \
 	-e "YOUR_EMAIL" \
 	-a "ACCESS_KEY_ID" \
 	-s "SECRET_ACCESS_KEY"
 ```
-You will receive an email with the URL for your new website, with a confirmation code to log in.
+You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
 
-3. Upload images to S3. If using PlotCritic as part of the [SV-Plaudit](https://github.com/jbelyeu/SV-Plaudit) pipeline, refer to that repository for upload instructions.
+3. Upload images to S3. Uses `config.json`.
+```
+python upload.py -d [your_directory]
+```
 
-
-
-## More Options
-### Retrieval Script
-The `retrieval.py` script retrieves data from the DynamoDB table and prints it out as tab-separated lines, allowing you to create custom reports.
+4. Retrieve scores.
+The `retrieval.py` script retrieves data from the DynamoDB table and prints it out as tab-separated lines, allowing you to create custom reports. Uses `config.json`.
 
 Usage:
 ```
@@ -86,6 +84,14 @@ The `-f` (filters) option allows you to pass in key-value pairs to filter the re
 The following example shows only results from a project named "my_project":
 ```
 python retrieval.py  -f "project","my_project"
+```
+
+
+## More options
+### Annotate a VCF with the scoring results
+The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval and accesses the `config.json` file.
+```
+python annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -o new.vcf
 ```
 
 ### Delete Project
