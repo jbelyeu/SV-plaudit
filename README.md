@@ -4,7 +4,7 @@ SV-plaudit provides a pipeline for creating image views of genomic intervals, au
 
 The PlotCritic and Samplot submodules each contain instructions for use. `upload.py` is the meeting point between them and handles uploading images created by Samplot to cloud storage managed by PlotCritic.
 
-Steps:
+**General Steps:**
 1. Generate a set of images with Samplot.
 2. Follow PlotCritic setup instructions to create the cloud environment.
 3. Use `upload.py` with the directory that holds the Samplot images to upload them.
@@ -13,7 +13,7 @@ Steps:
     ```
 4. Follow PlotCritic instructions to score images and retrieve scores.
 
-Python dependencies:
+**Python dependencies:**
 * numpy
 * matplotlib
 * pylab
@@ -22,48 +22,32 @@ Python dependencies:
 * boto3
 * yaml 
 
-All of these are available from [pip](https://pypi.python.org/pypi/pip).
+All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 
 Generating images:
 
-Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like one used the the 1000 Genomes Project (ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz). Follow the usage examples below to format your commands.
-## Usage Examples: 
+Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. Follow the usage examples below to format your commands.
+## Image Generation Examples: 
 
 
 ### Basic use case
 We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Project](http://www.internationalgenome.org/about). 
 
-Let's say we have BAM files and want to see what the inversion in NA12878 at 2:89161083-89185670 looks like. 
+Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to the parents (NA12889, NA12890). 
 The following command will create an image of that region:
 ```
-python src/samplot.py -c chr2 -s 89161083 -e 89185670 -b \
-Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
--o img/hi_2_89161083_89185670.png -n NA12878,NA12889,NA12890 -t INV
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/alignments/NA12878_restricted.bam,Samplot/test/data/alignments/NA12889_restricted.bam,Samplot/test/data/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL > 4_115928726_115931880.args
 ```
 
-<img src="/doc/imgs/hi_2_89161083_89185670.png">
-
-### Basic use case with sampling
-That took 1m23.766s to generate. To speed things up, we'll use the -d flag to set the sampling depth at 200 reads from the region we're interested in.
-```
-python src/samplot.py -c chr2 -s 89161083 -e 89185670 -b \
-Samplot/test/data/high_coverage/NA12878_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12889_S1.restricted_sv_regions.bam,Samplot/test/data/high_coverage/NA12890_S1.restricted_sv_regions.bam \
--o img/hi_2_89161083_89185670_200reads.png -n NA12878,NA12889,NA12890 -t INV -d 200
-```
-<img src="doc/imgs/hi_2_89161083_89185670_200reads.png">
-
-Generated in 0m3.632s and it looks pretty good. Read sampling will only filter out 'normal' reads - splitters, discordants and read depth track will still appear.
-
+<img src="/doc/imgs/X_101055330_101067156.png">
 
 ### CRAM inputs
-Samplot also support CRAM input, which requires a reference fasta file for reading as noted above.
+Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size.
 
 ```
-python src/samplot.py -c 2 -s 89161083 -e 89185670 -b \
-Samplot/test/data/low_coverage/NA12878.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20121211.cram,Samplot/test/data/low_coverage/NA12889.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20130415.cram,Samplot/test/data/low_coverage/NA12890.mapped.ILLUMINA.bwa.CEU.low_coverage.restricted_sv_regions.20130415.cram \
--o img/low_2_89161083_89185670_200reads_cram.png -n NA12878,NA12889,NA12890 -t INV -d 200 -r ~/Research/data/reference/hg19/hg19.fa
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/alignments/NA12878_restricted.cram,Samplot/test/data/alignments/NA12889_restricted.cram,Samplot/test/data/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa > cram_X_101055330_101067156.args
 ```
-<img src="doc/imgs/low_2_89161083_89185670_200reads_cram.png">
+<img src="doc/imgs/cramX_101055330_101067156.png">
 
 ## Creating a PlotCritic website
 Prep:
