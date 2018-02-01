@@ -55,6 +55,7 @@ Prep:
    * AmazonS3FullAccess
    * AmazonDynamoDBFullAccess
    * AmazonCognitoPowerUser
+   
 Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
 2. Run the following command (substituting your own fields):
