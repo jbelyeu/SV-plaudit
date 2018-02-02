@@ -55,6 +55,7 @@ Prep:
    * AmazonS3FullAccess
    * AmazonDynamoDBFullAccess
    * AmazonCognitoPowerUser
+   
 Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
 2. Run the following command (substituting your own fields):
@@ -73,26 +74,36 @@ python upload.py -d [your_directory]
 ```
 
 4. Retrieve scores.
-The `retrieval.py` script retrieves data from the DynamoDB table and prints it out as tab-separated lines, allowing you to create custom reports. Uses `config.json`.
+The `retrieval.py` script retrieves data from the DynamoDB table and prints it out as tab-separated lines, allowing you to create custom reports. Uses `config.json`. Results are stored in a tab-separated file.
 
 Usage:
 ```
-python retrieval.py 
+python retrieval.py > retrieved_data.csv
 ```
 
 The `-f` (filters) option allows you to pass in key-value pairs to filter the results. 
 The following example shows only results from a project named "my_project":
 ```
-python retrieval.py  -f "project","my_project"
+python retrieval.py  -f "project","my_project" > retrieved_data.csv
 ```
-
 
 ## More options
 ### Annotate a VCF with the scoring results
 The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval and accesses the `config.json` file.
 ```
-python annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -o new.vcf
+python SV-plaudit/annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
 ```
+Arguments used in this example are:
+
+`-s` File of scoring results (input, from score retrieval step above).
+
+`-v` VCF file of variants represented in the scoring experiment, to be annotated with scoring results (input).
+
+`-a` Annotated VCF. Contains same fields as original VCF, but with annotations added for scored variants (output).
+
+`-o` Operation argument. A function to apply to scores for generation of an overall curation score for the variant. Allowed functions are `mean`, `median`,  `min`, `max`.
+
+`-n` Numeric representation of the answer options, in order (order based on `config.json` file). In the example above,  the curation answers are "Supports", "Does not support", "De novo". If 3 reviewers gave a variant the scores "Supports", "Does not support", "De novo", respectively, the curation score resulting would be the mean of 1,0,1 or .66.
 
 ### Delete Project
 The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the config.json file created during setup. 
