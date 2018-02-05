@@ -2,7 +2,12 @@
 
 SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis.
 
-The PlotCritic and Samplot submodules each contain instructions for use. `upload.py` is the meeting point between them and handles uploading images created by Samplot to cloud storage managed by PlotCritic.
+The PlotCritic and Samplot submodules each contain instructions for use. `upload.py` handles uploading images created by Samplot to cloud storage managed by PlotCritic.
+
+This repository should be cloned using the --recursive flag:
+```
+git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
+```
 
 **General Steps:**
 1. Generate a set of images with Samplot.
@@ -51,10 +56,27 @@ python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/al
 Prep:
 
 1. If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html), then use it to make a dedicated [IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console) with the following permissions:
-   * IAMFullAccess
    * AmazonS3FullAccess
    * AmazonDynamoDBFullAccess
    * AmazonCognitoPowerUser
+   * Add the following IAM permissions policy:
+```
+{  
+   "Version":"2012-10-17",
+   "Statement":[  
+      {  
+         "Sid":"VisualEditor0",
+         "Effect":"Allow",
+         "Action":[  
+            "iam:PassRole",
+            "iam:CreateRole",
+            "iam:AttachRolePolicy"
+         ],
+         "Resource":"*"
+      }
+   ]
+}
+```
    
 Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
