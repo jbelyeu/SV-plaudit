@@ -4,7 +4,7 @@ SV-plaudit provides a pipeline for creating image views of genomic intervals, au
 
 The PlotCritic and Samplot submodules each contain instructions for use. `upload.py` handles uploading images created by Samplot to cloud storage managed by PlotCritic.
 
-This repository should be cloned using the --recursive flag:
+This repository should be cloned using the --recursive flag to include submodules:
 ```
 git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
 ```
