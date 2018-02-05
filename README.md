@@ -82,7 +82,7 @@ Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
 2. Run the following command (substituting your own fields):
 ```
-python PlotCritic/plotcritic_setup.py \
+python PlotCritic/setup.py \
 	-p "PROJECT_NAME" \
 	-e "YOUR_EMAIL" \
 	-a "ACCESS_KEY_ID" \
