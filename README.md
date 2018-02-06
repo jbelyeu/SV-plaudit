@@ -9,7 +9,7 @@ This repository should be cloned using the --recursive flag to include submodule
 git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
 ```
 
-**General Steps:**
+**Steps for use (details below):**
 1. Generate a set of images with Samplot.
 2. Follow PlotCritic setup instructions to create the cloud environment.
 3. Upload the images to PlotCritic website.
@@ -27,16 +27,13 @@ git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
 
 All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 
-Generating images:
 
-Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. Follow the usage examples below to format your commands.
 ## Usage 
-The following examples show how to create images using samplot, create a website for scoring with PlotCritic, and then upload images to AWS for scoring with the PlotCritic website. These examples will assume that the user has successfully cloned the repository and is working in that directory.
+### Step 1: Image Generation: 
+Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the `samplot` repository.
 
-### Image Generation Examples: 
 
-
-#### Basic use case
+#### Samplot basic use case
 We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Project](http://www.internationalgenome.org/about). 
 
 Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to the parents (NA12889, NA12890). 
@@ -55,8 +52,8 @@ python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignme
 ```
 <img src="doc/imgs/cramX_101055330_101067156.png">
 
-### Creating a PlotCritic website
-1. If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html), then use it to make a dedicated [IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console) with the following permissions:
+### Step 2: Creating a PlotCritic website
+If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html), then use it to make a dedicated [IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console) with the following permissions:
    * AmazonS3FullAccess
    * AmazonDynamoDBFullAccess
    * AmazonCognitoPowerUser
@@ -81,7 +78,7 @@ python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignme
    
 Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
-2. Run the following command (substituting your own fields):
+Run the following command (substituting your own fields):
 ```
 python PlotCritic/setup.py \
 	-p "PROJECT_NAME" \
@@ -91,12 +88,18 @@ python PlotCritic/setup.py \
 ```
 You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
 
-3. Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
+
+### Step 3: Upload images from samplot to PlotCritic website
+Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
 ```
 python upload.py -d [your_directory] -c [config_file]
 ```
+### Step 4: Score images
+This section is still under development
 
-4. Retrieve scores.
+### Step 5: Retrieve scores and analyze results
+
+#### Retrieving scores
 The `retrieval.py` script retrieves data from the DynamoDB table and prints it out as tab-separated lines, allowing you to create custom reports. Uses `config.json`. Results are stored in a tab-separated file.
 
 Usage:
@@ -110,8 +113,7 @@ The following example shows only results from a project named "my_project":
 python retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data.csv
 ```
 
-## More options
-### Annotate a VCF with the scoring results
+#### Annotate a VCF with the scoring results
 The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required.
 ```
 python SV-plaudit/annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
@@ -128,7 +130,9 @@ Arguments used in this example are:
 
 `-n` Numeric representation of the answer options, in order (order based on `config.json` file). In the example above,  the curation answers are "Supports", "Does not support", "De novo". If 3 reviewers gave a variant the scores "Supports", "Does not support", "De novo", respectively, the curation score resulting would be the mean of 1,0,1 or .66.
 
-### Delete Project
+
+### Additional options
+#### Deleting a project
 The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. 
 
 Usage:
@@ -142,5 +146,5 @@ The following example deletes the entire project and all related resources:
 python delete_project.py -f -c [config_file]
 ```
 
-### HTTPS
+#### HTTPS
 For additional security, use AWS Cloudfront to deploy with an SSL certificate through the Amazon Credential Manager (ACM). Further instructions available [here](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html).
