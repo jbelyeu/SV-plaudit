@@ -30,7 +30,7 @@ All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 
 ## Usage 
 ### Step 1: Image Generation: 
-Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the `samplot` repository.
+Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the [samplot](https://github.com/ryanlayer/samplot) repository.
 
 
 #### Samplot basic use case
