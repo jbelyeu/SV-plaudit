@@ -35,11 +35,12 @@ for filename in os.listdir(args.directory):
     raw_filename, ext = os.path.splitext(filename)
     if raw_filename not in sv_args: sv_args[raw_filename] = {}
     if raw_filename not in dir_files: dir_files[raw_filename] = {}
-    if ext == ".args":
+    if ext == ".json":
         dir_files[raw_filename]['args'] = filename
     else:
         dir_files[raw_filename]['img'] = filename
 for raw_filename in dir_files:
+    
     # filter for unmatched files
     if not dir_files[raw_filename]['args'] and dir_files[raw_filename]['img']:
         print ("Warning: mismatched file with prefix'" + raw_filename + "' found in '" + args.directory + "'")
@@ -56,14 +57,10 @@ for raw_filename in dir_files:
     sv_args[raw_filename]['file_url'] = str('%s/%s/%s' % (client.meta.endpoint_url, config_data['AWSBucketName'], key))
 
     # upload entries for image use to DynamoDB
-    with open(args.directory + '/' + dir_files[raw_filename]['args'], 'r') as arg_file:
-        keys = arg_file.readline().strip().replace("#", '').split('\t')
-        values = arg_file.readline().strip().split('\t')
-        if "file_url" in sv_args[raw_filename]:
-            keys.append("file_url")
-            values.append(sv_args[raw_filename]['file_url'])
-        sv_args[raw_filename] = dict(zip(keys, values))
-        sv_args[raw_filename]['bams'] = sv_args[raw_filename]['bams'].split(',')
+    json_args = json.load(open(args.directory + '/' + dir_files[raw_filename]['args'], 'r'))
+    if "file_url" in sv_args[raw_filename]:
+        json_args['inc_info'] = sv_args[raw_filename]['file_url']
+    sv_args[raw_filename] = json_args
 
 dynamodb = boto3.resource('dynamodb',
     aws_access_key_id=config_data['accessKey'], 
@@ -72,14 +69,9 @@ dynamodb = boto3.resource('dynamodb',
 imgs_table = dynamodb.Table(config_data['dynamoImagesTable'])
 with imgs_table.batch_writer() as batch:
     for key in sv_args:
+        sv_args[key]['identifier'] = sv_args[key]['inc_info']
+
         batch.put_item(
-            Item = {
-                'identifier'        : sv_args[key]['file_url'],
-                'chr'       : sv_args[key]['chrom'],
-                'start'     : sv_args[key]['start'],
-                'end'       : sv_args[key]['end'],
-                'bams'      : sv_args[key]['bams'],
-                'inc_info'  : sv_args[key]['file_url']
-            }
+            Item = sv_args[key]
         )
 
