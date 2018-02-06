@@ -53,11 +53,11 @@ python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignme
 <img src="doc/imgs/cramX_101055330_101067156.png">
 
 ### Step 2: Creating a PlotCritic website
-If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html), then use it to make a dedicated [IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console) with the following permissions:
-   * AmazonS3FullAccess
-   * AmazonDynamoDBFullAccess
-   * AmazonCognitoPowerUser
-   * Add the following IAM permissions policy:
+If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html).
+
+The following instructions give detailed help on createing the IAM User, accurate as of February 2018. AWS at times updates the Console UI, so if we're behind in updating these instructions at any time refer to AWS resources for help ([IAM Policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html), [IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console)).
+
+Create a new IAM Policy by opening the [IAM console](https://console.aws.amazon.com/iam/home#/home), selecting 'Policies' from the left side navigation bar, and then clicking 'Create Policy'. Switch to the JSON editor window and paste in the following Policy definition:
 ```
 {  
    "Version":"2012-10-17",
@@ -75,7 +75,16 @@ If you don't already have one, create an [AWS account](https://portal.aws.amazon
    ]
 }
 ```
-   
+Click 'Review Policy', add a name (i.e. 'PlotCritic__Policy'), optionally a description, then click 'Create policy'.
+
+Select 'Users' from the left navigation bar, then 'Add user'. Add a name for the user (i.e. 'PlotCritic_User'), click the radiobutton for 'Programmatic access', then 'Next: Permissions'. 
+
+Choose 'Attach existing policies directly' and select the following policies:
+   * AmazonS3FullAccess
+   * AmazonDynamoDBFullAccess
+   * AmazonCognitoPowerUser
+   * PlotCritic__Policy (or the name you selected)
+
 Take note of the Access Key ID and Secret Access Key created for your IAM User.
 
 Run the following command (substituting your own fields):
@@ -87,7 +96,6 @@ python PlotCritic/setup.py \
 	-s "SECRET_ACCESS_KEY"
 ```
 You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
-
 
 ### Step 3: Upload images from samplot to PlotCritic website
 Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
