@@ -30,31 +30,32 @@ All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 Generating images:
 
 Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. Follow the usage examples below to format your commands.
-## Image Generation Examples: 
+## Usage 
+The following examples show how to create images using samplot, create a website for scoring with PlotCritic, and then upload images to AWS for scoring with the PlotCritic website. These examples will assume that the user has successfully cloned the repository and is working in that directory.
+
+### Image Generation Examples: 
 
 
-### Basic use case
+#### Basic use case
 We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Project](http://www.internationalgenome.org/about). 
 
 Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to the parents (NA12889, NA12890). 
 The following command will create an image of that region:
 ```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/alignments/NA12878_restricted.bam,Samplot/test/data/alignments/NA12889_restricted.bam,Samplot/test/data/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL > 4_115928726_115931880.args
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.bam,Samplot/test/alignments/NA12889_restricted.bam,Samplot/test/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL > 4_115928726_115931880.args
 ```
 
 <img src="/doc/imgs/4_115928726_115931880.png">
 
-### CRAM inputs
+#### CRAM inputs
 Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size.
 
 ```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/alignments/NA12878_restricted.cram,Samplot/test/data/alignments/NA12889_restricted.cram,Samplot/test/data/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa > cram_X_101055330_101067156.args
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.cram,Samplot/test/alignments/NA12889_restricted.cram,Samplot/test/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa > cram_X_101055330_101067156.args
 ```
 <img src="doc/imgs/cramX_101055330_101067156.png">
 
-## Creating a PlotCritic website
-Prep:
-
+### Creating a PlotCritic website
 1. If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html), then use it to make a dedicated [IAM user](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_console) with the following permissions:
    * AmazonS3FullAccess
    * AmazonDynamoDBFullAccess
@@ -90,9 +91,9 @@ python PlotCritic/setup.py \
 ```
 You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
 
-3. Upload images to S3. Uses `config.json`.
+3. Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
 ```
-python upload.py -d [your_directory]
+python upload.py -d [your_directory] -c [config_file]
 ```
 
 4. Retrieve scores.
@@ -100,18 +101,18 @@ The `retrieval.py` script retrieves data from the DynamoDB table and prints it o
 
 Usage:
 ```
-python retrieval.py > retrieved_data.csv
+python retrieval.py -c [config_file] > retrieved_data.csv
 ```
 
 The `-f` (filters) option allows you to pass in key-value pairs to filter the results. 
 The following example shows only results from a project named "my_project":
 ```
-python retrieval.py  -f "project","my_project" > retrieved_data.csv
+python retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data.csv
 ```
 
 ## More options
 ### Annotate a VCF with the scoring results
-The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval and accesses the `config.json` file.
+The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required.
 ```
 python SV-plaudit/annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
 ```
@@ -128,17 +129,17 @@ Arguments used in this example are:
 `-n` Numeric representation of the answer options, in order (order based on `config.json` file). In the example above,  the curation answers are "Supports", "Does not support", "De novo". If 3 reviewers gave a variant the scores "Supports", "Does not support", "De novo", respectively, the curation score resulting would be the mean of 1,0,1 or .66.
 
 ### Delete Project
-The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the config.json file created during setup. 
+The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. 
 
 Usage:
 ```
-python delete_project.py 
+python delete_project.py -c [config_file]
 ```
 
 If `-f` (full-deletion) option is not selected, you can choose to keep various resources, such as the S3 bucket containing your images and the DynamoDB tables with scoring results. If `-f` is selected, however, all external resources will be deleted permanently.
 The following example deletes the entire project and all related resources:
 ```
-python delete_project.py -f
+python delete_project.py -f -c [config_file]
 ```
 
 ### HTTPS
