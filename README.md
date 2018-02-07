@@ -159,7 +159,7 @@ The `delete_project.py` script allows you to delete a project to clean up after 
 
 Usage:
 ```
-python delete_project.py -c [config_file]
+python PlotCritic/delete_project.py -c [config_file]
 ```
 
 If `-f` (full-deletion) option is not selected, you can choose to keep various resources, such as the S3 bucket containing your images and the DynamoDB tables with scoring results. If `-f` is selected, however, all external resources will be deleted permanently.
