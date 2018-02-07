@@ -126,19 +126,19 @@ The `retrieval.py` script retrieves data from the DynamoDB table and prints it o
 
 Usage:
 ```
-python retrieval.py -c [config_file] > retrieved_data.csv
+python PlotCritic/retrieval.py -c [config_file] > retrieved_data.csv
 ```
 
 The `-f` (filters) option allows you to pass in key-value pairs to filter the results. 
 The following example shows only results from a project named "my_project":
 ```
-python retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data.csv
+python PlotCritic/retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data.csv
 ```
 
 #### Annotate a VCF with the scoring results
 The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot_vcf.sh` script is used for generation of the images (or at least that the file naming convention of `samplot_vcf.sh`, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png').
 ```
-python SV-plaudit/annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
+python annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
 ```
 Arguments used in this example are:
 
@@ -165,7 +165,7 @@ python delete_project.py -c [config_file]
 If `-f` (full-deletion) option is not selected, you can choose to keep various resources, such as the S3 bucket containing your images and the DynamoDB tables with scoring results. If `-f` is selected, however, all external resources will be deleted permanently.
 The following example deletes the entire project and all related resources:
 ```
-python delete_project.py -f -c [config_file]
+python PlotCritic/delete_project.py -f -c [config_file]
 ```
 
 #### HTTPS
