@@ -40,6 +40,25 @@ The following command will create an image of that region:
 ```
 python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/NA12878_restricted.bam,Samplot/test/data/NA12889_restricted.bam,Samplot/test/data/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL
 ```
+
+The arguments used above are:
+
+`-n` The names to be shown for each sample in the plot
+
+`-b` The BAM/CRAM files of the samples (comma-separated)
+
+`-o` The name of the output file containing the plot
+
+`-s` The start location of the region of interest
+
+`-e` The end location of the region of interest
+
+`-c` The chromosome of the region of interest
+
+`-a` A flag requiring the script to output an additional metadata file based on the arguments to this call, useful for PlotCritic. The file will be in .json format and will have the same name as the output file specified by `-o` excpet for the extension .json
+
+`-t` The type of the variant of interest
+
 This will create two files, named `4_115928726_115931880.png` and `4_115928726_115931880.json`. The latter file contains the metadata necessary for PlotCritic and scoring. The image created is below:
 
 <img src="/doc/imgs/4_115928726_115931880.png">
@@ -52,10 +71,14 @@ script or be careful to follow the naming convention it enforces for output file
 ```
 bash Samplot/src/samplot_vcf.sh -o output_dir -B /Users/jon/anaconda/bin/bcftools -S Samplot/src/samplot.py -v Samplot/test/data/NA12878.trio.svt.subset.vcf Samplot/test/data/NA12878_restricted.bam Samplot/test/data/NA12889_restricted.bam Samplot/test/data/NA12890_restricted.bam
 ```
+The arguments used above are:
 
 `-o` output directory (make this directory before executing)
+
 `-B` Executable file of [bcftools](https://samtools.github.io/bcftools/)
+
 `-S` samplot.py script
+
 `-v` VCF file with variants to plot
 
 #### CRAM inputs
@@ -64,6 +87,12 @@ Samplot also support CRAM input, which requires a reference fasta file for readi
 ```
 python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/NA12878_restricted.cram,Samplot/test/data/NA12889_restricted.cram,Samplot/test/data/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa
 ```
+
+The arguments used above are the same as those used for the basic use case, with the addition of the following:
+
+`-r` The reference file used for reading CRAM files
+
+
 And the image is again below:
 <img src="doc/imgs/cramX_101055330_101067156.png">
 
@@ -107,12 +136,32 @@ Click 'Create user' and take note of the Access Key ID and Secret Access Key cre
 
 Run the following command (substituting your own fields):
 ```
-python PlotCritic/setup.py \
-	-p "PROJECT_NAME" \
-	-e "YOUR_EMAIL" \
-	-a "ACCESS_KEY_ID" \
-	-s "SECRET_ACCESS_KEY"
+python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com -a [ACCESS_KEY_ID] -s [SECRET_ACCESS_KEY] -q "Does evidence in the sample support the variant called?" -A "s","Supports" "n","Does not support" "d","De novo"
 ```
+
+The arguments used above are:
+`-p` A project name (must be unique)
+
+`-e` The email address of the user managing the project. You must be able to access this email account to use the website
+
+`-a` The access key ID generated when you created your AWS user
+
+`-s` The secret access key generated when you creates your AWS user
+
+`-q` A curation question to display in the website for scoring images
+
+`-A` The curation answers to display in the website for scoring images (must follow the example above, with a one-letter code and an answer for each entry, separated with commas and separated from other entries with spaces)
+
+If the curation question and answers are not set, defaults are as follows:
+
+```
+Question:
+"Does the top sample support the variant type shown? If so, does it appear to be a de novo mutation? Choose one answer from below or type the corresponding letter key."
+
+Answers:
+"s","Supports" "n","Does not support" "d","De novo"
+```
+
 You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
 
 ### Step 3: Upload images from samplot to PlotCritic website
