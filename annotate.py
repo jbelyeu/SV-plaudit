@@ -57,7 +57,7 @@ with open(args.scores, 'r') as scores:
             scored_variants[key]['email'][email].append([score, int(fields[5])])
 
 for key in scored_variants:
-    scored_variants[key]["score_fields"] = score_fields
+    scored_variants[key]["score_fields"] = dict(score_fields)
     
     for email in scored_variants[key]['email']:
         #latest_timestamp = datetime.datetime.min
@@ -70,22 +70,19 @@ for key in scored_variants:
                 latest_timestamp = entry[1]
         scored_variants[key]['score_fields'][answer] += 1
         scored_variants[key]['score_fields']['scorer_count'] += 1
+
 vcf = cyvcf2.VCF(os.path.expanduser(args.vcf))
 vcf.add_info_to_header({"ID": "SVPD", "Description": "Details of SV-plaudit scorer count and scores in the format COUNT|SCORE1,SCORE2,SCOREN. Answers the question: `" + question + "` Available answers were as follows: `" + "`; `".join(answers) + "`", "Type":'Character', 'Number':'1'})
 vcf.add_info_to_header({"ID": "SVP", "Description": "SV-plaudit curation score, the " + args.operation + " of scores for that entry where the values of the following curation answers: `" +  "`; `".join(answers) + "` are " + ",".join(args.number_map), "Type":'Float',  'Number':'1'})
 writer = cyvcf2.Writer(args.annotated_outfile, vcf)
+
 for variant in vcf:
-    for key in scored_variants:
-        key_info = key.split("_")
-
-        sv_type = key_info[0]
-        chrom = key_info[1]
-        pos, end = key_info[2].split("-")
-
-        if variant.var_type == "sv" and \
-                variant.CHROM == chrom and \
-                variant.POS == int(pos) and \
-                variant.INFO['END'] == int(end):
+    if variant.INFO.get('END'):
+        key = variant.INFO.get('SVTYPE') + '_' + \
+                variant.CHROM + '_' + \
+                str(variant.POS) + '-' + \
+                str(variant.INFO.get('END'))
+        if key in scored_variants:
             vcf_annotation = str(scored_variants[key]['score_fields']['scorer_count']) + "|"
             for answer in answers:
                 vcf_annotation += str(scored_variants[key]['score_fields'][answer]) + ","
