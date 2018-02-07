@@ -32,14 +32,13 @@ All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 ### Step 1: Image Generation: 
 Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the samplot repository.
 
-
 #### Samplot basic use case
 We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Project](http://www.internationalgenome.org/about). 
 
 Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to two other samples (NA12889, NA12890). 
 The following command will create an image of that region:
 ```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.bam,Samplot/test/alignments/NA12889_restricted.bam,Samplot/test/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/NA12878_restricted.bam,Samplot/test/data/NA12889_restricted.bam,Samplot/test/data/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL
 ```
 This will create two files, named `4_115928726_115931880.png` and `4_115928726_115931880.json`. The latter file contains the metadata necessary for PlotCritic and scoring. The image created is below:
 
@@ -51,14 +50,19 @@ To plot images from all structural variants in a VCF file, use samplot's `samplo
 If you wish to use the `annotate.py` script described below (under 'Step 5'), you must either use the 'samplot_vcf.sh'
 script or be careful to follow the naming convention it enforces for output files (specifically: 'SVTYPE_CHROM_POS-END.png',  as in 'DEL_22_37143105-37144405.png').
 ```
-bash Samplot/src/samplot_vcf.sh -o output_dir -B /Users/jon/anaconda/bin/bcftools -S Samplot/src/samplot.py -v NA12878.trio.svt.subset.vcf Samplot/test/alignments/NA12878_restricted.bam Samplot/test/alignments/NA12889_restricted.bam SV-plaudit/Samplot/test/alignments/NA12890_restricted.bam
+bash Samplot/src/samplot_vcf.sh -o output_dir -B /Users/jon/anaconda/bin/bcftools -S Samplot/src/samplot.py -v Samplot/test/data/NA12878.trio.svt.subset.vcf Samplot/test/data/NA12878_restricted.bam Samplot/test/data/NA12889_restricted.bam Samplot/test/data/NA12890_restricted.bam
 ```
+
+`-o` output directory (make this directory before executing)
+`-B` Executable file of [bcftools](https://samtools.github.io/bcftools/)
+`-S` samplot.py script
+`-v` VCF file with variants to plot
 
 #### CRAM inputs
 Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size. This time we'll plot an interesting duplication at X:101055330-101067156.
 
 ```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.cram,Samplot/test/alignments/NA12889_restricted.cram,Samplot/test/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/NA12878_restricted.cram,Samplot/test/data/NA12889_restricted.cram,Samplot/test/data/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa
 ```
 And the image is again below:
 <img src="doc/imgs/cramX_101055330_101067156.png">
@@ -138,7 +142,7 @@ python PlotCritic/retrieval.py  -f "email","me@email.com" -c PlotCritic/config.j
 #### Annotate a VCF with the scoring results
 The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot_vcf.sh` script is used for generation of the images (or at least that the file naming convention of `samplot_vcf.sh`, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png').
 ```
-python annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
+python annotate.py -s retrieved_data.csv -v Samplot/test/data/NA12878.trio.svt.subset.vcf -a new.vcf -o mean -n 1,0,1
 ```
 Arguments used in this example are:
 
