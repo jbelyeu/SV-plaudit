@@ -76,7 +76,11 @@ writer = cyvcf2.Writer(args.annotated_outfile, vcf)
 for variant in vcf:
     for key in scored_variants:
         key_info = key.split("_")
-        chrom, pos, end = key_info[0], int(key_info[1]), int(key_info[2])
+
+        sv_type = key_info[0]
+        chrom = key_info[1]
+        pos, end = key_info[2].split("-")
+        
         if variant.var_type == "sv" and \
                 variant.CHROM == chrom and \
                 variant.POS == pos and \
