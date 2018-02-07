@@ -130,9 +130,9 @@ python PlotCritic/retrieval.py -c [config_file] > retrieved_data.csv
 ```
 
 The `-f` (filters) option allows you to pass in key-value pairs to filter the results. 
-The following example shows only results from a project named "my_project":
+The following example shows only results scored by a user with the email address "me@email.com":
 ```
-python PlotCritic/retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data.csv
+python PlotCritic/retrieval.py  -f "email","me@email.com" -c PlotCritic/config.json > retrieved_data.csv
 ```
 
 #### Annotate a VCF with the scoring results
