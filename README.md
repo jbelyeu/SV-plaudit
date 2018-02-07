@@ -2,15 +2,15 @@
 
 SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis.
 
-The PlotCritic and Samplot submodules each contain instructions for use. `upload.py` handles uploading images created by Samplot to cloud storage managed by PlotCritic.
+This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including the two submodules that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic).
 
-This repository should be cloned using the --recursive flag to include submodules:
+This repository should be cloned using the --recursive flag to include those submodules:
 ```
 git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
 ```
 
 **Steps for use (details below):**
-1. Generate a set of images with Samplot.
+1. Generate a set of images with samplot.
 2. Follow PlotCritic setup instructions to create the cloud environment.
 3. Upload the images to PlotCritic website.
 4. Score images.
@@ -30,7 +30,7 @@ All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 
 ## Usage 
 ### Step 1: Image Generation: 
-Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the [samplot](https://github.com/ryanlayer/samplot) repository.
+Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the samplot repository.
 
 
 #### Samplot basic use case
@@ -46,10 +46,12 @@ This will create two files, named `4_115928726_115931880.png` and `4_115928726_1
 <img src="/doc/imgs/4_115928726_115931880.png">
 
 #### Generating images from a VCF file
-**Under development**
+To plot images from all structural variants in a VCF file, use samplot's `samplot_vcf.sh` script. This accepts a VCF file and the BAM files of samples you wish to plot, outputing images and related metadata to a directory of your choosing.
 
+If you wish to use the `annotate.py` script described below (under 'Step 5'), you must either use the 'samplot_vcf.sh'
+script or be careful to follow the naming convention it enforces for output files (specifically: 'SVTYPE_CHROM_POS-END.png',  as in 'DEL_22_37143105-37144405.png').
 ```
-bash SV-plaudit/Samplot/src/samplot_vcf.sh -o temp2/ -B /Users/jon/anaconda/bin/bcftools -S SV-plaudit/Samplot/src/samplot.py -v NA12878.trio.svt.subset.vcf SV-plaudit/Samplot/test/data/NA12878_restricted.bam SV-plaudit/Samplot/test/data/NA12889_restricted.bam SV-plaudit/Samplot/test/data/NA12890_restricted.bam
+bash Samplot/src/samplot_vcf.sh -o output_dir -B /Users/jon/anaconda/bin/bcftools -S Samplot/src/samplot.py -v NA12878.trio.svt.subset.vcf Samplot/test/alignments/NA12878_restricted.bam Samplot/test/alignments/NA12889_restricted.bam SV-plaudit/Samplot/test/alignments/NA12890_restricted.bam
 ```
 
 #### CRAM inputs
@@ -134,7 +136,7 @@ python retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data
 ```
 
 #### Annotate a VCF with the scoring results
-The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot_vcf.sh` script is used for generation of the images (or at least that the file naming convention of `samplot_vcf.sh`, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png'.
+The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot_vcf.sh` script is used for generation of the images (or at least that the file naming convention of `samplot_vcf.sh`, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png').
 ```
 python SV-plaudit/annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
 ```
