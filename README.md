@@ -36,24 +36,29 @@ Samplot requires alignments in BAM or CRAM format as primary input (if you use C
 #### Samplot basic use case
 We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Project](http://www.internationalgenome.org/about). 
 
-Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to the parents (NA12889, NA12890). 
+Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to two other samples (NA12889, NA12890). 
 The following command will create an image of that region:
 ```
 python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.bam,Samplot/test/alignments/NA12889_restricted.bam,Samplot/test/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL
 ```
-This will create two files, named `4_115928726_115931880.png` and `4_115928726_115931880.json`. The latter file contains the metadata necessary for PlotCritic and scoring.
+This will create two files, named `4_115928726_115931880.png` and `4_115928726_115931880.json`. The latter file contains the metadata necessary for PlotCritic and scoring. The image created is below:
 
 <img src="/doc/imgs/4_115928726_115931880.png">
 
 #### Generating images from a VCF file
-Under development
+**Under development**
+
+```
+bash SV-plaudit/Samplot/src/samplot_vcf.sh -o temp2/ -B /Users/jon/anaconda/bin/bcftools -S SV-plaudit/Samplot/src/samplot.py -v NA12878.trio.svt.subset.vcf SV-plaudit/Samplot/test/data/NA12878_restricted.bam SV-plaudit/Samplot/test/data/NA12889_restricted.bam SV-plaudit/Samplot/test/data/NA12890_restricted.bam
+```
 
 #### CRAM inputs
-Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size.
+Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size. This time we'll plot an interesting duplication at X:101055330-101067156.
 
 ```
 python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.cram,Samplot/test/alignments/NA12889_restricted.cram,Samplot/test/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa
 ```
+And the image is again below:
 <img src="doc/imgs/cramX_101055330_101067156.png">
 
 ### Step 2: Creating a PlotCritic website
