@@ -39,16 +39,20 @@ We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Projec
 Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to the parents (NA12889, NA12890). 
 The following command will create an image of that region:
 ```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.bam,Samplot/test/alignments/NA12889_restricted.bam,Samplot/test/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL > 4_115928726_115931880.args
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.bam,Samplot/test/alignments/NA12889_restricted.bam,Samplot/test/alignments/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL
 ```
+This will create two files, named `4_115928726_115931880.png` and `4_115928726_115931880.json`. The latter file contains the metadata necessary for PlotCritic and scoring.
 
 <img src="/doc/imgs/4_115928726_115931880.png">
+
+#### Generating images from a VCF file
+Under development
 
 #### CRAM inputs
 Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size.
 
 ```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.cram,Samplot/test/alignments/NA12889_restricted.cram,Samplot/test/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa > cram_X_101055330_101067156.args
+python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/alignments/NA12878_restricted.cram,Samplot/test/alignments/NA12889_restricted.cram,Samplot/test/alignments/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa
 ```
 <img src="doc/imgs/cramX_101055330_101067156.png">
 
@@ -59,33 +63,36 @@ The following instructions give detailed help on createing the IAM User, accurat
 
 Create a new IAM Policy by opening the [IAM console](https://console.aws.amazon.com/iam/home#/home), selecting 'Policies' from the left side navigation bar, and then clicking 'Create Policy'. Switch to the JSON editor window and paste in the following Policy definition:
 ```
-{  
-   "Version":"2012-10-17",
-   "Statement":[  
-      {  
-         "Sid":"VisualEditor0",
-         "Effect":"Allow",
-         "Action":[  
-            "iam:PassRole",
-            "iam:CreateRole",
-            "iam:AttachRolePolicy"
-         ],
-         "Resource":"*"
-      }
-   ]
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole",
+                "iam:CreateRole",
+                "iam:AttachRolePolicy",
+                "iam:ListAttachedRolePolicies",
+                "iam:DetachRolePolicy",
+                "iam:DeleteRole"
+            ],
+            "Resource": "*"
+        }
+    ]
 }
 ```
-Click 'Review Policy', add a name (i.e. 'PlotCritic__Policy'), optionally a description, then click 'Create policy'.
+Click 'Review Policy', add a name (Ex. 'PlotCritic__Policy'), optionally a description, then click 'Create policy'.
 
-Select 'Users' from the left navigation bar, then 'Add user'. Add a name for the user (i.e. 'PlotCritic_User'), click the radiobutton for 'Programmatic access', then 'Next: Permissions'. 
+Select 'Users' from the left navigation bar, then 'Add user'. Add a name for the user (Ex. 'PlotCritic_User'), click the radio button for 'Programmatic access', then 'Next: Permissions'. 
 
 Choose 'Attach existing policies directly' and select the following policies:
    * AmazonS3FullAccess
    * AmazonDynamoDBFullAccess
    * AmazonCognitoPowerUser
-   * PlotCritic__Policy (or the name you selected)
-
-Take note of the Access Key ID and Secret Access Key created for your IAM User.
+   * Your new policy (Ex. 'PlotCritic__Policy')
+   
+Click 'Create user' and take note of the Access Key ID and Secret Access Key created for your IAM User. The Secret Access Key will not be available later, so you must record it at this point. 
 
 Run the following command (substituting your own fields):
 ```
@@ -122,7 +129,7 @@ python retrieval.py  -f "project","my_project" -c [config_file] > retrieved_data
 ```
 
 #### Annotate a VCF with the scoring results
-The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required.
+The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot_vcf.sh` script is used for generation of the images (or at least that the file naming convention of `samplot_vcf.sh`, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png'.
 ```
 python SV-plaudit/annotate.py -s retrieved_data.txt -v NA12878.trio.svt.vcf.gz -a new.vcf -o mean -n 1,0,1
 ```
