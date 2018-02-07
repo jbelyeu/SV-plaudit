@@ -4,7 +4,7 @@ from __future__ import print_function
 import sys
 import argparse
 import os
-import datetime
+#import datetime
 import cyvcf2
 import statistics
 
@@ -53,14 +53,15 @@ with open(args.scores, 'r') as scores:
             if email not in scored_variants[key]['email']:
                 scored_variants[key]['email'][email] = []
             score = fields[3]
-            response_time = datetime.datetime.fromtimestamp(int(fields[5]))
-            scored_variants[key]['email'][email].append([score, response_time])
+            #response_time = datetime.datetime.fromtimestamp(int(fields[5]))
+            scored_variants[key]['email'][email].append([score, int(fields[5])])
 
 for key in scored_variants:
     scored_variants[key]["score_fields"] = score_fields
     
     for email in scored_variants[key]['email']:
-        latest_timestamp = datetime.datetime.min
+        #latest_timestamp = datetime.datetime.min
+        latest_timestamp = 0
         answer = ''
         #find latest answer for each user
         for entry in scored_variants[key]['email'][email]:
@@ -80,11 +81,11 @@ for variant in vcf:
         sv_type = key_info[0]
         chrom = key_info[1]
         pos, end = key_info[2].split("-")
-        
+
         if variant.var_type == "sv" and \
                 variant.CHROM == chrom and \
-                variant.POS == pos and \
-                variant.INFO['END'] == end:
+                variant.POS == int(pos) and \
+                variant.INFO['END'] == int(end):
             vcf_annotation = str(scored_variants[key]['score_fields']['scorer_count']) + "|"
             for answer in answers:
                 vcf_annotation += str(scored_variants[key]['score_fields'][answer]) + ","
