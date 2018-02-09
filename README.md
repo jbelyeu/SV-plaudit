@@ -136,7 +136,7 @@ Click 'Create user' and take note of the Access Key ID and Secret Access Key cre
 
 Run the following command (substituting your own fields):
 ```
-python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com -a [ACCESS_KEY_ID] -s [SECRET_ACCESS_KEY] -q "Does evidence in the sample support the variant called?" -A "s","Supports" "n","Does not support" "d","De novo"
+python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com -a [ACCESS_KEY_ID] -s [SECRET_ACCESS_KEY] -q "Does evidence in the sample support the variant called?" -A "s","Supports" "n","Does not support" "d","De novo" -r
 ```
 
 The arguments used above are:
@@ -151,6 +151,8 @@ The arguments used above are:
 `-q` A curation question to display in the website for scoring images
 
 `-A` The curation answers to display in the website for scoring images (must follow the example above, with a one-letter code and an answer for each entry, separated with commas and separated from other entries with spaces)
+
+`-r` Flag to randomize the display order of images in the PlotCritic website on reload. If ommitted images display in the same order each time
 
 If the curation question and answers are not set, defaults are as follows:
 
