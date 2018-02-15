@@ -137,7 +137,7 @@ Click 'Create user' and take note of the Access Key ID and Secret Access Key cre
 Run the following command (substituting your own fields):
 ```
 python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com \
-    -a AKIAI63BOTTCFQX556OQ -s KuCJEWDAtcYILYzlze1/qkAQVtJyzAV42bVx7wOI \
+    -a [ACCESS_KEY] -s [SECRET_ACCESS_ID] \
     -q "Does evidence in the sample support the variant called?" \
     -A "s":"Supports" "n":"Does not support" "d":"De novo" -r \
     -R "chrom" "start" "end" "sv_type" "titles" "bams" \
