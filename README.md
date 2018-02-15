@@ -176,15 +176,20 @@ Answers:
 
 You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
 
-### Step 3: Upload images from 
+### Step 3: Upload images to PlotCritic website
 
-to PlotCritic website
 Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
 ```
-python upload.py -d [your_directory] -c [config_file]
+python PlotCritic/upload.py -d [your_directory] -c [config_file]
 ```
 ### Step 4: Score images
 This section is still under development
+
+PlotCritic setup will send an email containing a link to the new site and a temporary access code to the email address you entered when you ran `setup.py` (at times this email can delay a few minutes, as it waits for the new website to go live). Click on the link and go to the `Manage Account` page, where you will need to enter that email address as username and the temporary access code as password. Click on the button labeled `Confirming new account`, then click `Submit` to proceed. You will be prompted to set your password; it is essential that you do so immediately or you will lose access. Click `Change password` when the page loads and enter your new password.
+
+Notice that the `Manage Account` page is also the place to add additional users. Enter their email addresses and they will be sent an email like you received, with a temporary access code.
+
+Now you're ready to score variants! We recommend watching [this video](https://www.youtube.com/watch?v=ono8kHMKxDs), which has an introduction to SV scoring with SV-plaudit.
 
 ### Step 5: Retrieve scores and analyze results
 
