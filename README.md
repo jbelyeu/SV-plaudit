@@ -136,10 +136,16 @@ Click 'Create user' and take note of the Access Key ID and Secret Access Key cre
 
 Run the following command (substituting your own fields):
 ```
-python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com -a [ACCESS_KEY_ID] -s [SECRET_ACCESS_KEY] -q "Does evidence in the sample support the variant called?" -A "s","Supports" "n","Does not support" "d","De novo" -r
+python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com \
+    -a AKIAI63BOTTCFQX556OQ -s KuCJEWDAtcYILYzlze1/qkAQVtJyzAV42bVx7wOI \
+    -q "Does evidence in the sample support the variant called?" \
+    -A "s":"Supports" "n":"Does not support" "d":"De novo" -r \
+    -R "chrom" "start" "end" "sv_type" "titles" "bams" \
+    -S "chrom" "start" "end" "sv_type"
 ```
 
 The arguments used above are:
+
 `-p` A project name (must be unique)
 
 `-e` The email address of the user managing the project. You must be able to access this email account to use the website
@@ -154,8 +160,12 @@ The arguments used above are:
 
 `-r` Flag to randomize the display order of images in the PlotCritic website on reload. If ommitted images display in the same order each time
 
-If the curation question and answers are not set, defaults are as follows:
+'R' Metadata fields for downstream analysis of the scoring results (if not selected, defaults to a set of fields matching those used by samplot)
 
+'S' Summary metadata fields to show in the web-based report page. Must also be in the report fields (-R)
+
+
+If the curation question and answers are not set, defaults are as follows:
 ```
 Question:
 "Does the top sample support the variant type shown? If so, does it appear to be a de novo mutation? Choose one answer from below or type the corresponding letter key."
@@ -166,7 +176,9 @@ Answers:
 
 You will receive an email with the URL for your new website, with a confirmation code to log in. This script creates a configuration file `config.json` within the PlotCritic directory that later scripts require.
 
-### Step 3: Upload images from samplot to PlotCritic website
+### Step 3: Upload images from 
+
+to PlotCritic website
 Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
 ```
 python upload.py -d [your_directory] -c [config_file]
