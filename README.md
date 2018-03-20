@@ -227,7 +227,7 @@ Arguments used in this example are:
 
 ### Additional options
 #### Deleting a project
-The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. 
+The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. Be aware that deleting external resources may take some time, so if you delete a project and then attempt to recreate it immediately you may get a resource error from AWS. If this occurs, you'll need to rerun deletion to remove any parts of the infrastructure that were created before failure, wait a bit, and then rerun setup.
 
 Usage:
 ```
