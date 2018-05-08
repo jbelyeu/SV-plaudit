@@ -104,5 +104,5 @@ for variant in vcf:
                     continue
                 variant.INFO['SVP'] = str(curation_score)
             variant.INFO['SVPD'] = vcf_annotation
-        writer.write_record(variant)
+    writer.write_record(variant)
 writer.close()
