@@ -136,7 +136,7 @@ Click 'Create user' and take note of the Access Key ID and Secret Access Key cre
 
 Run the following command (substituting your own fields):
 ```
-python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com \
+python PlotCritic/project_setup.py -p temp -e jrbelyeu@gmail.com \
     -a [ACCESS_KEY] -s [SECRET_ACCESS_ID] \
     -q "Does evidence in the sample support the variant called?" \
     -A "s":"Supports" "n":"Does not support" "d":"De novo" -r \
@@ -178,14 +178,14 @@ You will receive an email with the URL for your new website, with a confirmation
 
 ### Step 3: Upload images to PlotCritic website
 
-Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
+Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/project_setup.py` script.
 ```
 python PlotCritic/upload.py -d [your_directory] -c [config_file]
 ```
 ### Step 4: Score images
 This section is still under development
 
-PlotCritic setup will send an email containing a link to the new site and a temporary access code to the email address you entered when you ran `setup.py` (at times this email can delay a few minutes, as it waits for the new website to go live). Click on the link and go to the `Manage Account` page, where you will need to enter that email address as username and the temporary access code as password. Click on the button labeled `Confirming new account`, then click `Submit` to proceed. You will be prompted to set your password; it is essential that you do so immediately or you will lose access. Click `Change password` when the page loads and enter your new password.
+PlotCritic setup will send an email containing a link to the new site and a temporary access code to the email address you entered when you ran `project_setup.py` (at times this email can delay a few minutes, as it waits for the new website to go live). Click on the link and go to the `Manage Account` page, where you will need to enter that email address as username and the temporary access code as password. Click on the button labeled `Confirming new account`, then click `Submit` to proceed. You will be prompted to set your password; it is essential that you do so immediately or you will lose access. Click `Change password` when the page loads and enter your new password.
 
 Notice that the `Manage Account` page is also the place to add additional users. Enter their email addresses and they will be sent an email like you received, with a temporary access code.
 
@@ -227,7 +227,7 @@ Arguments used in this example are:
 
 ### Additional options
 #### Deleting a project
-The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. Be aware that deleting external resources may take some time, so if you delete a project and then attempt to recreate it immediately you may get a resource error from AWS. If this occurs, you'll need to rerun deletion to remove any parts of the infrastructure that were created before failure, wait a bit, and then rerun setup.
+The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. Be aware that deleting external resources may take some time, so if you delete a project and then attempt to recreate it immediately you may get a resource error from AWS. If this occurs, you'll need to rerun deletion to remove any parts of the infrastructure that were created before failure, wait a bit, and then rerun project_setup.
 
 Usage:
 ```
