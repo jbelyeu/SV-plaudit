@@ -253,6 +253,5 @@ alt="SV-Plaudit Basics" width="240" height="180" border="10" /></a>
 
 **Instructional Video: Detailed How-To**
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=ophD-GdkOwiY
-" target="_blank"><img src="http://img.youtube.com/vi/phD-GdkOwiY/0.jpg" 
-alt="SV-Plaudit How To" width="240" height="180" border="10" /></a>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=phD-GdkOwiY" target="_blank"><img src="http://img.youtube.com/vi/phD-GdkOwiY/0.jpg" 
+alt="SV-Plaudit Basics" width="240" height="180" border="10" /></a>
