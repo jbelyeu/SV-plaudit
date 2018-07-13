@@ -1,8 +1,10 @@
 # SV-plaudit: A cloud-assisted framework manually curating thousands of structural variants
+*(Please cite https://doi.org/10.1093/gigascience/giy064)*
 
-SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis.
+SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis. SV-plaudit supports image generation sequencing data from BAM or CRAM files from Illumina paired-end sequencing, PacBio or Oxford Nanopore Technologies long-read sequencing, or 10X Genomics linked-read sequencing.
 
-This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including the two submodules that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic).
+This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including the two submodules that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic). **Links to instructional videos at bottom of page.**
+
 
 This repository should be cloned using the --recursive flag to include those submodules:
 ```
@@ -242,3 +244,15 @@ python PlotCritic/delete_project.py -f -c [config_file]
 
 #### HTTPS
 For additional security, use AWS Cloudfront to deploy with an SSL certificate through the Amazon Credential Manager (ACM). Further instructions available [here](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html).
+
+
+**Instructional Video: SV-plaudit Basics**
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ono8kHMKxDs" target="_blank"><img src="http://img.youtube.com/vi/ono8kHMKxDs/0.jpg" 
+alt="SV-Plaudit Basics" width="240" height="180" border="10" /></a>
+
+**Instructional Video: Detailed How-To**
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ophD-GdkOwiY
+" target="_blank"><img src="http://img.youtube.com/vi/phD-GdkOwiY/0.jpg" 
+alt="SV-Plaudit How To" width="240" height="180" border="10" /></a>
