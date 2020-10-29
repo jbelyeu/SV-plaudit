@@ -1,7 +1,7 @@
 # SV-plaudit: A cloud-assisted framework manually curating thousands of structural variants
 *(Please cite https://doi.org/10.1093/gigascience/giy064)*
 
-SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis. SV-plaudit supports image generation sequencing data from BAM or CRAM files from Illumina paired-end sequencing, PacBio or Oxford Nanopore Technologies long-read sequencing, or 10X Genomics linked-read sequencing.
+SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis. SV-plaudit supports image generation sequencing data from BAM or CRAM files from Illumina paired-end sequencing, PacBio or Oxford Nanopore Technologies long-read sequencing, or 10X Genomics linked-read sequencing. **See also `samplot vcf`, which creates a local web viewer (also web-publishable) with a simpler setup procedure** in the [samplot](https://github.com/jbelyeu/samplot) repository.
 
 This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including a submodule that contains much of the functionality; [PlotCritic](https://github.com/jbelyeu/PlotCritic). **Links to instructional videos at bottom of page.**
 
