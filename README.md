@@ -1,8 +1,10 @@
 # SV-plaudit: A cloud-assisted framework manually curating thousands of structural variants
+*(Please cite https://doi.org/10.1093/gigascience/giy064)*
 
-SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis.
+SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis. SV-plaudit supports image generation sequencing data from BAM or CRAM files from Illumina paired-end sequencing, PacBio or Oxford Nanopore Technologies long-read sequencing, or 10X Genomics linked-read sequencing.
 
-This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including the two submodules that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic).
+This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including the two submodules that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic). **Links to instructional videos at bottom of page.**
+
 
 This repository should be cloned using the --recursive flag to include those submodules:
 ```
@@ -136,7 +138,7 @@ Click 'Create user' and take note of the Access Key ID and Secret Access Key cre
 
 Run the following command (substituting your own fields):
 ```
-python PlotCritic/setup.py -p temp -e jrbelyeu@gmail.com \
+python PlotCritic/project_setup.py -p temp -e jrbelyeu@gmail.com \
     -a [ACCESS_KEY] -s [SECRET_ACCESS_ID] \
     -q "Does evidence in the sample support the variant called?" \
     -A "s":"Supports" "n":"Does not support" "d":"De novo" -r \
@@ -178,14 +180,14 @@ You will receive an email with the URL for your new website, with a confirmation
 
 ### Step 3: Upload images to PlotCritic website
 
-Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/setup.py` script.
+Upload images to S3. Uses `config.json`, which was created by the `PlotCritic/project_setup.py` script.
 ```
 python PlotCritic/upload.py -d [your_directory] -c [config_file]
 ```
 ### Step 4: Score images
 This section is still under development
 
-PlotCritic setup will send an email containing a link to the new site and a temporary access code to the email address you entered when you ran `setup.py` (at times this email can delay a few minutes, as it waits for the new website to go live). Click on the link and go to the `Manage Account` page, where you will need to enter that email address as username and the temporary access code as password. Click on the button labeled `Confirming new account`, then click `Submit` to proceed. You will be prompted to set your password; it is essential that you do so immediately or you will lose access. Click `Change password` when the page loads and enter your new password.
+PlotCritic setup will send an email containing a link to the new site and a temporary access code to the email address you entered when you ran `project_setup.py` (at times this email can delay a few minutes, as it waits for the new website to go live). Click on the link and go to the `Manage Account` page, where you will need to enter that email address as username and the temporary access code as password. Click on the button labeled `Confirming new account`, then click `Submit` to proceed. You will be prompted to set your password; it is essential that you do so immediately or you will lose access. Click `Change password` when the page loads and enter your new password.
 
 Notice that the `Manage Account` page is also the place to add additional users. Enter their email addresses and they will be sent an email like you received, with a temporary access code.
 
@@ -227,7 +229,7 @@ Arguments used in this example are:
 
 ### Additional options
 #### Deleting a project
-The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. Be aware that deleting external resources may take some time, so if you delete a project and then attempt to recreate it immediately you may get a resource error from AWS. If this occurs, you'll need to rerun deletion to remove any parts of the infrastructure that were created before failure, wait a bit, and then rerun setup.
+The `delete_project.py` script allows you to delete a project to clean up after finishing, using configuration information from the `config.json` file. Be aware that deleting external resources may take some time, so if you delete a project and then attempt to recreate it immediately you may get a resource error from AWS. If this occurs, you'll need to rerun deletion to remove any parts of the infrastructure that were created before failure, wait a bit, and then rerun project_setup.
 
 Usage:
 ```
@@ -242,3 +244,14 @@ python PlotCritic/delete_project.py -f -c [config_file]
 
 #### HTTPS
 For additional security, use AWS Cloudfront to deploy with an SSL certificate through the Amazon Credential Manager (ACM). Further instructions available [here](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html).
+
+
+**Instructional Video: SV-plaudit Basics**
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=ono8kHMKxDs" target="_blank"><img src="http://img.youtube.com/vi/ono8kHMKxDs/0.jpg" 
+alt="SV-Plaudit Basics" width="240" height="180" border="10" /></a>
+
+**Instructional Video: Detailed How-To**
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=phD-GdkOwiY" target="_blank"><img src="http://img.youtube.com/vi/phD-GdkOwiY/0.jpg" 
+alt="SV-Plaudit Basics" width="240" height="180" border="10" /></a>
