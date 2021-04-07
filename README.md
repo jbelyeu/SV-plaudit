@@ -146,9 +146,9 @@ python PlotCritic/retrieval.py  -f "email","me@email.com" -c PlotCritic/config.j
 ```
 
 #### Annotate a VCF with the scoring results
-The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot_vcf.sh` script is used for generation of the images (or at least that the file naming convention of `samplot_vcf.sh`, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png').
+The results of scoring can be added to a VCF file as annotations in the INFO field. This annotation requires the output file from score retrieval. The `config.json` file is not required. This requires that the `samplot vcf` command is used for generation of the images (or at least that the same file naming convention, 'SVTYPE_CHROM_POS-END.png', is maintained, as in 'DEL_22_37143105-37144405.png').
 ```
-python annotate.py -s retrieved_data.csv -v Samplot/test/data/NA12878.trio.svt.subset.vcf -a new.vcf -o mean -n 1,0,1
+python annotate.py -s retrieved_data.csv -v NA12878.trio.svt.subset.vcf -a new.vcf -o mean -n 1,0,1
 ```
 Arguments used in this example are:
 
