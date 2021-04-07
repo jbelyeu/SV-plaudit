@@ -3,15 +3,15 @@
 
 SV-plaudit provides a pipeline for creating image views of genomic intervals, automatically storing them in the cloud, deploying a website to view/score them, and retrieving scores for analysis. SV-plaudit supports image generation sequencing data from BAM or CRAM files from Illumina paired-end sequencing, PacBio or Oxford Nanopore Technologies long-read sequencing, or 10X Genomics linked-read sequencing.
 
-This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including the two submodules that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic). **Links to instructional videos at bottom of page.**
+This README contains detailed instructions for many of the different options supported by the SV-plaudit framework, including Samplot and the PlotCritic submodule that contain most of the functionality; [samplot](https://github.com/ryanlayer/samplot) and [PlotCritic](https://github.com/jbelyeu/PlotCritic). **Links to instructional videos at bottom of page.**
 
 
-This repository should be cloned using the --recursive flag to include those submodules:
+This repository should be cloned using the --recursive flag to include PlotCritic:
 ```
 git clone --recursive https://github.com/jbelyeu/SV-plaudit.git
 ```
 
-**Steps for use (details below):**
+**Overview of steps for use (details below):**
 1. Generate a set of images with samplot.
 2. Follow PlotCritic setup instructions to create the cloud environment.
 3. Upload the images to PlotCritic website.
@@ -32,71 +32,7 @@ All of the above are available from [pip](https://pypi.python.org/pypi/pip).
 
 ## Usage 
 ### Step 1: Image Generation: 
-Samplot requires alignments in BAM or CRAM format as primary input (if you use CRAM, you'll also need a reference genome like [this one](ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/technical/reference/human_g1k_v37.fasta.gz) from the the 1000 Genomes Project. The usage examples below use small BAM and CRAM files from the samplot repository.
-
-#### Samplot basic use case
-We're  using data from NA12878, NA12889, and NA12890 in the [1000 Genomes Project](http://www.internationalgenome.org/about). 
-
-Let's say we have BAM files and want to see what the deletion in NA12878 at 4:115928726-115931880 looks like compared to two other samples (NA12889, NA12890). 
-The following command will create an image of that region:
-```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/NA12878_restricted.bam,Samplot/test/data/NA12889_restricted.bam,Samplot/test/data/NA12890_restricted.bam -o 4_115928726_115931880.png -s 115928726 -e 115931880 -c chr4 -a -t DEL
-```
-
-The arguments used above are:
-
-`-n` The names to be shown for each sample in the plot
-
-`-b` The BAM/CRAM files of the samples (comma-separated)
-
-`-o` The name of the output file containing the plot
-
-`-s` The start location of the region of interest
-
-`-e` The end location of the region of interest
-
-`-c` The chromosome of the region of interest
-
-`-a` A flag requiring the script to output an additional metadata file based on the arguments to this call, useful for PlotCritic. The file will be in .json format and will have the same name as the output file specified by `-o` excpet for the extension .json
-
-`-t` The type of the variant of interest
-
-This will create two files, named `4_115928726_115931880.png` and `4_115928726_115931880.json`. The latter file contains the metadata necessary for PlotCritic and scoring. The image created is below:
-
-<img src="/doc/imgs/4_115928726_115931880.png">
-
-#### Generating images from a VCF file
-To plot images from all structural variants in a VCF file, use samplot's `samplot_vcf.sh` script. This accepts a VCF file and the BAM files of samples you wish to plot, outputing images and related metadata to a directory of your choosing.
-
-If you wish to use the `annotate.py` script described below (under 'Step 5'), you must either use the 'samplot_vcf.sh'
-script or be careful to follow the naming convention it enforces for output files (specifically: 'SVTYPE_CHROM_POS-END.png',  as in 'DEL_22_37143105-37144405.png').
-```
-bash Samplot/src/samplot_vcf.sh -o output_dir -B /Users/jon/anaconda/bin/bcftools -S Samplot/src/samplot.py -v Samplot/test/data/NA12878.trio.svt.subset.vcf Samplot/test/data/NA12878_restricted.bam Samplot/test/data/NA12889_restricted.bam Samplot/test/data/NA12890_restricted.bam
-```
-The arguments used above are:
-
-`-o` output directory (make this directory before executing)
-
-`-B` Executable file of [bcftools](https://samtools.github.io/bcftools/)
-
-`-S` samplot.py script
-
-`-v` VCF file with variants to plot
-
-#### CRAM inputs
-Samplot also support CRAM input, which requires a reference fasta file for reading as noted above. Notice that the reference file is not included in this repository due to size. This time we'll plot an interesting duplication at X:101055330-101067156.
-
-```
-python Samplot/src/samplot.py -n NA12878,NA12889,NA12890 -b Samplot/test/data/NA12878_restricted.cram,Samplot/test/data/NA12889_restricted.cram,Samplot/test/data/NA12890_restricted.cram -o cramX_101055330_101067156.png -s 101055330 -e 101067156 -c chrX -a -t DUP -r ~/Research/data/reference/hg19/hg19.fa
-```
-
-The arguments used above are the same as those used for the basic use case, with the addition of the following:
-
-`-r` The reference file used for reading CRAM files
-
-
-And the image is again below:
-<img src="doc/imgs/cramX_101055330_101067156.png">
+Instructions for image generation with Samplot are available in the Samplot [readme](https://github.com/ryanlayer/samplot), with additional details in the [wiki](https://github.com/jbelyeu/samplot/wiki). It is essential that you use Samplot's `-a` parameter to create metadata files for PlotCritic (using either the `samplot plot` or `samplot vcf` command). If that is omitted accidentally, you can rerun the samplot command with the `-j` parameter to generate those metadata files. For more details, see the Samplot readme, wiki, and help (with `-h`).
 
 ### Step 2: Creating a PlotCritic website
 If you don't already have one, create an [AWS account](https://portal.aws.amazon.com/gp/aws/developer/registration/index.html).
